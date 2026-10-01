@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f3f6fb">
+  <meta name="description" content="Calcula distancia, velocidad, tiempo y aceleración en MRU y MRUV, y explora el movimiento con un simulador interactivo.">
+  <title>Movimiento — Laboratorio de física</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="physics.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></symbol>
+    <symbol id="i-step" viewBox="0 0 24 24"><path d="m5 5 10 7-10 7ZM19 5v14"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v.1"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 4v16h16M7 15l4-5 4 3 5-7"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-12h-7Z"/></symbol>
+  </svg>
+
+  <div class="app-shell">
+    <header class="header">
+      <a class="brand" href="./" aria-label="Movimiento, inicio">
+        <span class="brand-mark"><svg><use href="#i-arrow"/></svg></span>
+        <span>movimiento<span class="brand-dot">.</span></span>
+      </a>
+      <div class="header-label"><span class="small-dot"></span> LABORATORIO INTERACTIVO</div>
+      <a class="guide-link" href="#concepts"><svg><use href="#i-info"/></svg> La física detrás</a>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div><div class="eyebrow">FÍSICA, EN MOVIMIENTO</div><h1>Calcula. Simula. <em>Comprende.</em></h1><p>Elige qué necesitas encontrar. Introduce tus datos y resuelve tu ejercicio.</p></div>
+        <div class="lesson-badge"><span>01 /</span> CINEMÁTICA<br><strong>Una dimensión. Infinitas posibilidades.</strong></div>
+      </section>
+
+      <section class="calculator panel" aria-labelledby="calculator-title">
+        <div class="calculator-heading"><div><div class="eyebrow">RESUELVE TU EJERCICIO</div><h2 id="calculator-title">Calculadora de movimiento</h2><p>Despeja la incógnita y consulta la fórmula utilizada.</p></div><div class="calculator-mode" role="group" aria-label="Tipo de movimiento de la calculadora"><button id="calc-mode-mru" class="active" aria-pressed="true">MRU</button><button id="calc-mode-mruv" aria-pressed="false">MRUV</button></div></div>
+        <div class="calculator-layout">
+          <form id="calculator-form" novalidate>
+            <div class="calculator-selects"><label for="calc-target">¿Qué quieres calcular?<select id="calc-target"></select></label><label for="calc-method">Datos que conoces<select id="calc-method"></select></label></div>
+            <div id="calculator-fields" class="calculator-fields"></div>
+            <p class="calculator-help">Usa metros (m), segundos (s), m/s y m/s². Los valores pueden tener decimales.</p>
+            <button class="calculate-button" type="submit">Calcular resultado <svg><use href="#i-arrow"/></svg></button>
+          </form>
+          <div class="calculator-result" id="calculator-result" role="status" aria-live="polite" aria-atomic="true">
+            <span class="result-label" id="calc-result-label">TU RESULTADO</span>
+            <div class="result-value" id="calc-result-value">—</div>
+            <div class="result-formula" id="calc-formula"></div>
+            <p id="calc-substitution">Introduce los datos y pulsa «Calcular resultado».</p>
+            <p id="calc-result-note" class="result-note"></p>
+            <label class="solution-choice" id="calc-solution-label" for="calc-solution" hidden>Solución que se representa<select id="calc-solution"></select></label>
+          </div>
+        </div>
+        <p class="calculator-footnote">Al calcular, la gráfica y la simulación se actualizan con tus datos, sin recortar sus valores. Si no se indica x₀, se usa 0 m. En las fórmulas, d es el desplazamiento (xƒ − x₀), que puede ser negativo. Sin cambio de sentido, la distancia recorrida es |d|; si el objeto gira, no son lo mismo.</p>
+      </section>
+
+      <div class="workspace">
+        <aside class="controls panel" aria-label="Configuración del movimiento">
+          <div class="section-heading"><span class="section-number">01</span><h2>Tu experimento</h2><svg><use href="#i-spark"/></svg></div>
+          <div class="mode-switch" role="group" aria-label="Tipo de movimiento">
+            <button id="mode-mru" class="mode-button active" aria-pressed="true">MRU<span>Velocidad constante</span></button>
+            <button id="mode-mruv" class="mode-button" aria-pressed="false">MRUV<span>Aceleración constante</span></button>
+          </div>
+          <p class="mode-description" id="mode-description">Sin prisa ni pausa: la velocidad no cambia con el tiempo.</p>
+          <div class="divider"></div>
+          <div class="parameter">
+            <div class="parameter-heading"><label for="position-number">Posición inicial <span>x₀</span></label><div class="number-wrap"><input id="position-number" type="number" step="any" value="0"><span>m</span></div></div>
+            <input id="position-range" aria-label="Posición inicial" type="range" min="-100" max="100" step="1" value="0">
+            <div class="range-labels"><span>−100 m</span><span>100 m</span></div>
+          </div>
+          <div class="parameter">
+            <div class="parameter-heading"><label for="velocity-number">Velocidad inicial <span>v₀</span></label><div class="number-wrap"><input id="velocity-number" type="number" step="any" value="8"><span>m/s</span></div></div>
+            <input id="velocity-range" aria-label="Velocidad inicial" type="range" min="-20" max="20" step="0.5" value="8">
+            <div class="range-labels"><span>−20 m/s</span><span>20 m/s</span></div>
+          </div>
+          <div class="parameter acceleration-parameter" id="acceleration-parameter">
+            <div class="parameter-heading"><label for="acceleration-number">Aceleración <span>a</span></label><div class="number-wrap"><input id="acceleration-number" type="number" step="any" value="1.5" disabled><span>m/s²</span></div></div>
+            <input id="acceleration-range" aria-label="Aceleración" type="range" min="-5" max="5" step="0.1" value="1.5" disabled>
+            <div class="range-labels"><span>−5 m/s²</span><span>5 m/s²</span></div>
+            <div class="locked-note" id="locked-note">En MRU, la aceleración siempre es 0.</div>
+          </div>
+          <div class="duration-row"><label for="duration">Duración del experimento</label><div class="number-wrap"><input id="duration" type="number" min="0" step="any" value="12"><span>s</span></div></div>
+          <div class="divider"></div>
+          <div class="preset-label">¿POR DÓNDE EMPEZAR?</div>
+          <div class="presets"><button data-preset="cruise">→ A velocidad constante</button><button data-preset="accelerate">↗ Partir del reposo</button><button data-preset="brake">↘ Frenar y volver</button></div>
+          <div class="control-note"><svg><use href="#i-info"/></svg><span>Una velocidad negativa mueve el vehículo hacia la izquierda.</span></div>
+        </aside>
+
+        <div class="experiment">
+          <section class="simulation panel" aria-labelledby="simulation-title">
+            <div class="simulation-top"><div class="section-heading"><span class="section-number">02</span><h2 id="simulation-title">Observa el movimiento</h2></div><span class="status" id="status"><span></span>Listo para empezar</span></div>
+            <div class="scene-container"><canvas id="scene" role="img" aria-label="Animación del vehículo sobre una pista con posiciones en metros"></canvas><div class="scene-caption"><span class="scene-tag">VISTA LATERAL</span><span id="scale-label">La escala se adapta a tu experimento</span></div></div>
+            <div class="telemetry">
+              <div class="metric"><span>POSICIÓN <i>x</i></span><div><strong id="position-value">0.00</strong><span>m</span></div></div>
+              <div class="metric"><span>VELOCIDAD <i>v</i></span><div><strong id="velocity-value">8.00</strong><span>m/s</span></div></div>
+              <div class="metric"><span>ACELERACIÓN <i>a</i></span><div><strong id="acceleration-value">0.00</strong><span>m/s²</span></div></div>
+            </div>
+            <div class="playback">
+              <div class="transport"><button id="reset" class="icon-button" title="Reiniciar" aria-label="Reiniciar"><svg><use href="#i-reset"/></svg></button><button id="play" class="play-button" aria-label="Iniciar simulación"><svg><use href="#i-play"/></svg><span>Iniciar</span></button><button id="step" class="icon-button" title="Avanzar 0,1 segundos" aria-label="Avanzar 0,1 segundos"><svg><use href="#i-step"/></svg></button></div>
+              <div class="timeline"><div class="time-label"><span>TIEMPO</span><span><strong id="time-value">0.00</strong> / <span id="duration-value">12</span> s</span></div><input id="timeline" aria-label="Tiempo de la simulación" type="range" min="0" max="12" step="0.01" value="0"></div>
+              <label class="speed-label" for="speed">Ritmo<select id="speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+            </div>
+          </section>
+
+          <section class="graph-panel panel" aria-labelledby="graph-title">
+            <div class="graph-heading"><div class="section-heading"><span class="section-number">03</span><h2 id="graph-title">El movimiento, en una gráfica</h2></div><span class="live-label"><span></span>EN TIEMPO REAL</span></div>
+            <div class="graph-toolbar"><div class="graph-tabs" role="group" aria-label="Magnitud de la gráfica"><button class="active" data-graph="position" aria-pressed="true">Posición</button><button data-graph="velocity" aria-pressed="false">Velocidad</button><button data-graph="acceleration" aria-pressed="false">Aceleración</button></div><label class="compare" id="compare-label" title="Referencia sin aceleración, con la misma posición y velocidad iniciales"><input id="compare" type="checkbox"> Comparar con MRU</label></div>
+            <p id="graph-source" class="graph-source" role="status">Configura un experimento o calcula arriba para representar tus datos.</p>
+            <div class="chart-container"><canvas id="chart" role="img" aria-label="Gráfica de posición respecto al tiempo"></canvas></div>
+            <div class="graph-footer"><div class="legend"><span class="legend-dot"></span><span id="legend-label">Posición · MRU</span><span id="compare-legend" hidden><span class="legend-dash"></span>Referencia MRU</span></div><span>Arrastra el tiempo para explorar <span class="text-arrow">↔</span></span></div>
+          </section>
+        </div>
+      </div>
+
+      <section id="concepts" class="concepts" aria-labelledby="concept-title">
+        <div class="concept-intro"><div class="eyebrow">ENTIENDE LO QUE VES</div><h2 id="concept-title">Dos movimientos.<br> Una idea muy simple.</h2><p>El movimiento no es magia.<br> Es posición, tiempo y un poco de física.</p></div>
+        <article class="concept-card"><div class="concept-top"><span class="concept-tag">MRU</span><span class="mini-line">─────────→</span></div><h3>Siempre al mismo ritmo.</h3><p>Recorre distancias iguales en tiempos iguales. La velocidad es constante y no hay aceleración.</p><div class="formula">x = x₀ + v₀t</div><div class="formula-note">v = v₀ <span>·</span> a = 0</div></article>
+        <article class="concept-card"><div class="concept-top"><span class="concept-tag orange">MRUV</span><svg class="mini-chart" viewBox="0 0 70 24"><path d="M2 22Q40 22 68 2" fill="none" stroke="currentColor" stroke-width="2"/></svg></div><h3>Cada segundo, algo cambia.</h3><p>La aceleración es constante. La velocidad cambia de forma uniforme: puede acelerar, frenar o invertir el sentido.</p><div class="formula">x = x₀ + v₀t + ½at²</div><div class="formula-note">v = v₀ + at <span>·</span> a = constante</div></article>
+      </section>
+      <div class="insight"><svg><use href="#i-spark"/></svg><p><strong>Prueba esto:</strong> elige «Frenar y volver». Cuando la velocidad llegue a cero, el vehículo cambiará de dirección. ¿Qué ocurre con la gráfica de posición?</p></div>
+    </main>
+    <footer><span>movimiento. <span class="footer-muted">Un pequeño laboratorio para grandes preguntas.</span></span><span>HECHO PARA EXPLORAR <span class="footer-star">✳</span></span></footer>
+  </div>
+</body>
+</html>
